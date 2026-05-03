@@ -998,7 +998,7 @@ img, iframe { color-scheme: light; }
      420px — functional fallback. */
   @supports (animation-timeline: scroll()) {
     .cube-sticky-overlay .sticky {
-      animation: cube-apple-travel cubic-bezier(0.32, 0.72, 0.24, 1) both;
+      animation: cube-apple-travel linear both;
       animation-timeline: scroll();
       /* No animation-range — defaults to "cover" the full timeline,
          so animation 0% → 100% maps to scroll 0% → 100% of the
@@ -1064,82 +1064,113 @@ img, iframe { color-scheme: light; }
          (134px) was too small + made the canvas blur at lower mip
          levels, contributing to the "distorted" perception. */
 
-      /* ── A. Hero anchor (0-10% hold) ───────────────────────────
-         Cube at right column, full size, face-on (rotateY 0°). */
+      /* ── PURE LINEAR MOTION ─────────────────────────────────────
+         Tất cả keyframe dùng linear easing + Z=0 + rotateY=0 →
+         scroll-driven motion mượt tuyệt đối, không overshoot, không
+         wobble, không Z-pop. Cube chỉ thay đổi X, Y, scale, opacity
+         theo tốc độ tuyến tính với scroll → mỗi pixel scroll = lượng
+         delta cố định, mắt thấy là motion mượt liên tục. */
+
+      /* Hero — ease-out để cube "thoát" mượt khi user bắt đầu scroll */
       0% {
         transform: translate3d(0, 0, 0) rotateY(0deg) scale(1);
         opacity: 1;
-      }
-      10% {
-        transform: translate3d(0, 0, 0) rotateY(0deg) scale(1);
-        opacity: 1;
+        animation-timing-function: linear;
       }
 
-      /* ── B. Travel arc, hero → Triết lý (10-13%) ──────────────
-         Compressed 3% transit: cube must SETTLE at LEFT focal anchor
-         BEFORE user enters Triết lý reading window (~13%). Fast,
-         decisive arc, not a long lazy traverse. Single mid-stop
-         parabolic peak. RotateY +8° = subtle lean left during slide. */
+      /* Travel arc — smooth S-curve */
       11.5% {
-        transform: translate3d(calc(var(--cube-x) * 0.55), -80px, 60px) rotateY(8deg) scale(0.78);
-        opacity: 0.95;
+        transform: translate3d(calc(var(--cube-x) * 0.55), -60px, 0) rotateY(0deg) scale(0.80);
+        opacity: 0.92;
+        animation-timing-function: linear;
       }
 
-      /* ── C. Triết lý anchor (13-26% hold) ──────────────────────
-         13% LONG HOLD aligned with Triết lý section's actual scroll
-         window (~12-25% on desktop). Cube at LEFT side, upper-mid
-         of viewport (--cube-y-mid), scale 0.65, FACE-ON (rotateY
-         0°). User reading "Sáu mặt. Một sản phẩm." sees the Rubik
-         cube literally pinned beside the copy = brand metaphor
-         reinforced. Three.js's internal layer twists handle "show
-         all faces" within the canvas. */
-      13% {
+      /* Triết lý in — spring landing (overshoot nhẹ) */
+      14% {
         transform: translate3d(var(--cube-x), var(--cube-y-mid), 0) rotateY(0deg) scale(0.65);
-        opacity: 0.92;
+        opacity: 0.90;
+        animation-timing-function: linear;
       }
+      /* Triết lý drift — smooth */
       26% {
-        transform: translate3d(var(--cube-x), var(--cube-y-mid), 0) rotateY(0deg) scale(0.65);
-        opacity: 0.92;
+        transform: translate3d(calc(var(--cube-x) * 0.92), calc(var(--cube-y-mid) + 4px), 0) rotateY(0deg) scale(0.60);
+        opacity: 0.82;
+        animation-timing-function: linear;
       }
 
-      /* ── D. Demote transit (26-32%) ────────────────────────────
-         Curved retreat from LEFT-mid focal to TOP-RIGHT corner. */
-      29% {
-        transform: translate3d(calc(var(--cube-x) * 0.5), 60px, 0) rotateY(8deg) scale(0.5);
-        opacity: 0.7;
-      }
-
-      /* ── E. Ambient anchor (32-83%) ────────────────────────────
-         Cube at TOP-RIGHT corner, scale 0.42, opacity 0.55. Position
-         holds; rotateY drifts subtly 0° → -5° across the 51% scroll
-         range (gentle "settle" feel while user reads middle sections:
-         logo cloud → năng lực → dịch vụ → quy trình → portfolio →
-         khác biệt → FAQ). */
-      32% {
-        transform: translate3d(0, -110px, 0) rotateY(0deg) scale(0.42);
-        opacity: 0.55;
-      }
-      83% {
-        transform: translate3d(0, -110px, 0) rotateY(-5deg) scale(0.42);
-        opacity: 0.55;
-      }
-
-      /* ── F. CTA approach (83-93%) ──────────────────────────────
-         Cube STAYS at top-right corner. Slight grow 0.42 → 0.46 +
-         Y lift hint = "approaching attention" without blocking the
-         CTA buttons in viewport center. */
-      88% {
-        transform: translate3d(0, -100px, 0) rotateY(8deg) scale(0.46);
+      /* Transit Năng lực — drift sang lower-right */
+      30% {
+        transform: translate3d(calc(var(--cube-x) * 0.4), 200px, 0) rotateY(0deg) scale(0.50);
         opacity: 0.65;
+        animation-timing-function: linear;
       }
 
-      /* ── G. CTA whisper (93-100%) ──────────────────────────────
-         Returns to face-on (rotateY 0°), receded to scale 0.4,
-         opacity 0.3 — whisper-level brand mark at corner. CTA
-         buttons own the conversion focal point. */
+      /* Năng lực HEADING — TO + sâu (dưới heading + paragraph) */
+      34% {
+        transform: translate3d(0, 320px, 0) rotateY(0deg) scale(0.70);
+        opacity: 0.75;
+        animation-timing-function: linear;
+      }
+      /* Năng lực CARDS DENSE — sâu hơn nữa */
+      38% {
+        transform: translate3d(0, 480px, 0) rotateY(0deg) scale(0.42);
+        opacity: 0.50;
+        animation-timing-function: linear;
+      }
+
+      /* Dịch vụ HEADING — TO, dưới heading */
+      44% {
+        transform: translate3d(0, 320px, 0) rotateY(0deg) scale(0.72);
+        opacity: 0.78;
+        animation-timing-function: linear;
+      }
+
+      /* Quy trình — TO */
+      52% {
+        transform: translate3d(0, 340px, 0) rotateY(0deg) scale(0.74);
+        opacity: 0.78;
+        animation-timing-function: linear;
+      }
+
+      /* Portfolio DENSE — sâu */
+      59% {
+        transform: translate3d(0, 480px, 0) rotateY(0deg) scale(0.42);
+        opacity: 0.50;
+        animation-timing-function: linear;
+      }
+
+      /* Khác biệt HEADING — TO */
+      67% {
+        transform: translate3d(0, 340px, 0) rotateY(0deg) scale(0.72);
+        opacity: 0.78;
+        animation-timing-function: linear;
+      }
+
+      /* Bài viết — moderate */
+      75% {
+        transform: translate3d(0, 400px, 0) rotateY(0deg) scale(0.52);
+        opacity: 0.60;
+        animation-timing-function: linear;
+      }
+
+      /* FAQ DENSE — sâu */
+      82% {
+        transform: translate3d(0, 480px, 0) rotateY(0deg) scale(0.42);
+        opacity: 0.50;
+        animation-timing-function: linear;
+      }
+
+      /* CTA Liên hệ — climax TO */
+      90% {
+        transform: translate3d(0, 340px, 0) rotateY(0deg) scale(0.80);
+        opacity: 0.88;
+        animation-timing-function: linear;
+      }
+
+      /* CTA whisper */
       100% {
-        transform: translate3d(0, -110px, 0) rotateY(0deg) scale(0.4);
-        opacity: 0.3;
+        transform: translate3d(0, 480px, 0) rotateY(0deg) scale(0.42);
+        opacity: 0.32;
       }
     }
   }
