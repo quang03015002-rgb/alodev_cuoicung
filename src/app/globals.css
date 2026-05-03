@@ -1078,23 +1078,41 @@ img, iframe { color-scheme: light; }
         animation-timing-function: linear;
       }
 
-      /* Travel arc — smooth S-curve */
-      11.5% {
-        transform: translate3d(calc(var(--cube-x) * 0.55), -60px, 0) rotateY(0deg) scale(0.80);
+      /* Travel arc — midway hero → Triết lý */
+      11% {
+        transform: translate3d(calc(var(--cube-x) * 0.45), -50px, 0) rotateY(0deg) scale(0.85);
+        opacity: 0.95;
+        animation-timing-function: linear;
+      }
+      /* Pre-Triết lý smooth descent — bridge keyframe */
+      13% {
+        transform: translate3d(calc(var(--cube-x) * 0.85), calc(var(--cube-y-mid) - 30px), 0) rotateY(0deg) scale(0.72);
         opacity: 0.92;
         animation-timing-function: linear;
       }
 
-      /* Triết lý in — spring landing (overshoot nhẹ) */
-      14% {
-        transform: translate3d(var(--cube-x), var(--cube-y-mid), 0) rotateY(0deg) scale(0.65);
+      /* Triết lý in — settle smooth */
+      15% {
+        transform: translate3d(var(--cube-x), var(--cube-y-mid), 0) rotateY(0deg) scale(0.66);
         opacity: 0.90;
         animation-timing-function: linear;
       }
-      /* Triết lý drift — smooth */
+      /* Triết lý mid — gentle drift Y down nhẹ */
+      19% {
+        transform: translate3d(calc(var(--cube-x) * 0.98), calc(var(--cube-y-mid) + 12px), 0) rotateY(0deg) scale(0.64);
+        opacity: 0.88;
+        animation-timing-function: linear;
+      }
+      /* Triết lý mid-2 — drift X về giữa hơn */
+      22% {
+        transform: translate3d(calc(var(--cube-x) * 0.94), calc(var(--cube-y-mid) + 22px), 0) rotateY(0deg) scale(0.62);
+        opacity: 0.85;
+        animation-timing-function: linear;
+      }
+      /* Triết lý out — bắt đầu launch sang Năng lực */
       26% {
-        transform: translate3d(calc(var(--cube-x) * 0.92), calc(var(--cube-y-mid) + 4px), 0) rotateY(0deg) scale(0.60);
-        opacity: 0.82;
+        transform: translate3d(calc(var(--cube-x) * 0.85), calc(var(--cube-y-mid) + 30px), 0) rotateY(0deg) scale(0.58);
+        opacity: 0.78;
         animation-timing-function: linear;
       }
 
